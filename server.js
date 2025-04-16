@@ -1,41 +1,45 @@
 const express = require('express');
-const fetch = require('node-fetch');
-require('dotenv').config();
-
+const axios = require('axios');
 const app = express();
-const PORT = 3000;
 
 app.use(express.json());
 
-app.put('/update-custom-value', async (req, res) => {
-  const { locationId, customValueId, newValue } = req.body;
+app.post('/update-custom-value', async (req, res) => {
+  const { locationId, customFieldKey, customFieldValue, apiKey } = req.body;
 
-  if (!locationId || !customValueId || !newValue) {
-    return res.status(400).json({ error: 'Missing locationId, customValueId, or newValue' });
+  if (!locationId || !customFieldKey || !customFieldValue || !apiKey) {
+    return res.status(400).json({
+      success: false,
+      error: 'Missing required fields: locationId, customFieldKey, customFieldValue, or apiKey',
+    });
   }
 
   try {
-    const response = await fetch(`https://api.gohighlevel.com/v1/locations/${locationId}/customValues/${customValueId}`, {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${process.env.GHL_API_KEY}`,
-        'Content-Type': 'application/json',
+    const response = await axios.put(
+      `https://rest.gohighlevel.com/v1/locations/${locationId}/customFields`,
+      {
+        [customFieldKey]: customFieldValue,
       },
-      body: JSON.stringify({ value: newValue }),
+      {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    res.status(200).json({
+      success: true,
+      data: response.data,
     });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return res.status(response.status).json({ error: data });
-    }
-
-    res.json({ message: 'Custom value updated successfully', data });
   } catch (error) {
-    res.status(500).json({ error: 'Something went wrong', details: error.message });
+    console.error(error.response?.data || error.message);
+    res.status(500).json({
+      success: false,
+      error: error.response?.data || error.message,
+    });
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`✅ Server is running at http://localhost:${PORT}`);
-});
+// Export the app so Vercel can use it
+module.exports = app;
