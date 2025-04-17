@@ -1,21 +1,31 @@
 {
   "name": "ghl-custom-value-updater",
   "version": "1.0.0",
+  "description": "GHL embedded app to update custom values",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "axios": "^1.8.4",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+<<<<<<< HEAD
     "next": "^15.3.1",
     "node-fetch": "^3.3.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
+=======
+    "node-fetch": "^3.3.2",
+    "next": "^14.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+>>>>>>> 64b48398c3a10ae7142de94670342747ca3ad3fa
   }
 }
+

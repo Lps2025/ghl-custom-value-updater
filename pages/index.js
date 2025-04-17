@@ -1,20 +1,14 @@
-// pages/index.js
-
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { HL } from "@highlevel/embed";
 
 export default function Home() {
-  useEffect(() => {
-    window.addEventListener("message", (event) => {
-      if (event.data?.locationId) {
-        const hiddenInput = document.querySelector('input[name="location_id"]');
-        if (hiddenInput) {
-          hiddenInput.value = event.data.locationId;
-        }
-      }
-    });
+  const [locationId, setLocationId] = useState("");
 
-    // Ask parent (GHL) for location info
-    window.opener?.postMessage({ action: "getAppInfo" }, "*");
+  useEffect(() => {
+    HL.on("ready", async () => {
+      const context = await HL.getContext();
+      setLocationId(context.locationId);
+    });
   }, []);
 
   return (
@@ -31,7 +25,7 @@ export default function Home() {
         <label>About Section</label><br />
         <textarea name="about_text"></textarea><br /><br />
 
-        <input type="hidden" name="location_id" value="" />
+        <input type="hidden" name="location_id" value={locationId} />
 
         <button type="submit">Submit</button>
       </form>
