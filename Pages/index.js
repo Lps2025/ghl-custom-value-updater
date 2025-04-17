@@ -1,30 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>LaunchPoint App</title>
-    <script src="https://app.gohighlevel.com/embedded/sdk.js"></script>
-    <script>
-      window.addEventListener("load", async () => {
-        const { locationId } = await window.hlApp.init();
-        console.log("Embedded App Initialized: Location ID →", locationId);
+// Pages/index.js
+"use client";
 
-        // Send to API
-        const response = await fetch("/api/update-custom-value", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            locationId,
-            testField: "hello world"
-          }),
-        });
+import React, { useEffect, useState } from "react";
 
-        const result = await response.json();
-        console.log("API response:", result);
-      });
-    </script>
-  </head>
-  <body>
-    <h1>🎯 LaunchPoint GHL App</h1>
-    <p>This is running as an embedded app using the GHL SDK.</p>
-  </body>
-</html>
+const Home = () => {
+  const [locationId, setLocationId] = useState(null);
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    const initApp = async () => {
+      if (window?.app) {
+        const context = await window.app.getContext();
+        const locId = context?.locationId;
+        setLocationId(locId);
+        setIsReady(true);
+      }
+    };
+
+    initApp();
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-8">
+      <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-2xl text-center">
+        <h1 className="text-3xl font-bold mb-4 text-indigo-600">
+          Launch Point Studio App
+        </h1>
+        {isReady ? (
+          <p className="text-gray-700">
+            App initialized successfully! <br />
+            <span className="font-medium">Location ID:</span> {locationId}
+          </p>
+        ) : (
+          <p className="text-gray-400">Initializing...</p>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Home;
+
