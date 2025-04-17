@@ -9,24 +9,26 @@ export default function Home() {
   });
   const [status, setStatus] = useState('');
 
+  // Load GHL SDK script manually
   useEffect(() => {
-    const loadGhlSdk = async () => {
-      try {
-        const sdkModule = await import('https://embed.highlevel.tools/sdk.js');
-        const { GHL } = sdkModule;
-
-        GHL.on('ready', () => {
-          const location = GHL?.location;
-          if (location?.id) {
-            setLocationId(location.id);
-          }
-        });
-      } catch (error) {
-        console.error('Failed to load GHL SDK:', error);
-      }
-    };
-
-    loadGhlSdk();
+    const existingScript = document.getElementById('ghl-sdk');
+    if (!existingScript) {
+      const script = document.createElement('script');
+      script.src = 'https://embed.highlevel.tools/sdk.js';
+      script.id = 'ghl-sdk';
+      script.async = true;
+      script.onload = () => {
+        if (window.GHL) {
+          window.GHL.on('ready', () => {
+            const location = window.GHL?.location;
+            if (location?.id) {
+              setLocationId(location.id);
+            }
+          });
+        }
+      };
+      document.body.appendChild(script);
+    }
   }, []);
 
   const handleChange = (e) => {
@@ -104,10 +106,11 @@ export default function Home() {
           <button type="submit" style={{ padding: '10px 20px' }}>Save</button>
         </form>
       ) : (
-        <p>Loading SDK...</p>
+        <p>Loading GHL SDK...</p>
       )}
 
       {status && <p style={{ marginTop: '1rem' }}>{status}</p>}
     </div>
   );
 }
+
