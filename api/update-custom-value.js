@@ -65,9 +65,8 @@ export default async function handler(req, res) {
       social_media_links__x: payload['X'],
     };
 
-    const accessToken = process.env.GHL_API_KEY; // store securely in Vercel env vars
+    const accessToken = process.env.GHL_API_KEY;
 
-    // Loop through each key-value pair and update via API
     for (const [key, value] of Object.entries(customValueMap)) {
       if (value) {
         await axios.put(
@@ -87,7 +86,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ message: 'Custom values updated successfully!' });
 
   } catch (error) {
-    console.error('Error updating custom values:', error.response?.data || error.message);
+    console.error('❌ Error updating custom values:', error.response?.data || error.message);
     return res.status(500).json({ error: 'Failed to update custom values' });
   }
 }
