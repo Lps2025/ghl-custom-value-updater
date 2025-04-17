@@ -1,34 +1,39 @@
-import { useEffect, useState } from "react";
-import { GHL } from 'https://embed.highlevel.tools/sdk.js';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
-  const [locationId, setLocationId] = useState("");
+  const [locationId, setLocationId] = useState('');
 
   useEffect(() => {
-    HL.on("ready", async () => {
-      const context = await HL.getContext();
-      setLocationId(context.locationId);
-    });
+    const loadGhlSdk = async () => {
+      try {
+        const sdkModule = await import('https://embed.highlevel.tools/sdk.js');
+        const { GHL } = sdkModule;
+
+        GHL.on('ready', () => {
+          console.log('GHL SDK Ready!');
+          const location = GHL?.location;
+          if (location?.id) {
+            setLocationId(location.id);
+          }
+        });
+      } catch (error) {
+        console.error('Failed to load GHL SDK:', error);
+      }
+    };
+
+    loadGhlSdk();
   }, []);
 
   return (
-    <div style={{ padding: "40px", fontFamily: "Arial" }}>
-      <h1>LaunchPoint Setup Form</h1>
+    <div style={{ padding: '2rem', fontFamily: 'Arial, sans-serif' }}>
+      <h1>🚀 Welcome to Your GHL Embedded App</h1>
+      <p>This app is running inside a subaccount view using the Embedded SDK.</p>
 
-      <form method="POST" action="/api/update-custom-value">
-        <label>Business Name</label><br />
-        <input type="text" name="business_name" /><br /><br />
-
-        <label>Brand Color</label><br />
-        <input type="text" name="brand_color" /><br /><br />
-
-        <label>About Section</label><br />
-        <textarea name="about_text"></textarea><br /><br />
-
-        <input type="hidden" name="location_id" value={locationId} />
-
-        <button type="submit">Submit</button>
-      </form>
+      {locationId ? (
+        <p><strong>Location ID:</strong> {locationId}</p>
+      ) : (
+        <p>Loading SDK...</p>
+      )}
     </div>
   );
 }
