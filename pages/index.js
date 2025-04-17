@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { HL } from "@highlevel/embed";
+import { GHL } from 'https://embed.highlevel.tools/sdk.js';
 
 export default function Home() {
   const [locationId, setLocationId] = useState("");
