@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   try {
     const payload = req.body;
 
-    const locationId = payload.locationId;
+    const locationId = payload.location_id_parameter;
 
     const customValueMap = {
       // 🏢 Business Info
