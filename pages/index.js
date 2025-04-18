@@ -1,95 +1,156 @@
-import { useEffect, useState } from "react";
+import React, { useState } from 'react';
 
 export default function Home() {
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({
-    location_id: "",
-    business_name: "",
-    brand_color: "#4a90e2",
-    about_text: "",
-    // Add other fields here as needed
-  });
+  const totalSteps = 6;
 
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://embed.highlevel.tools/sdk.js";
-    script.async = true;
-    script.onload = () => {
-      if (window.HL) {
-        window.HL.on("ready", function () {
-          const locationId = window.HL?.location?.id;
-          setFormData(prev => ({ ...prev, location_id: locationId }));
-        });
-      }
-    };
-    document.body.appendChild(script);
-  }, []);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const nextStep = () => setStep((prev) => prev + 1);
-  const prevStep = () => setStep((prev) => prev - 1);
+  const handleNext = () => setStep((prev) => Math.min(prev + 1, totalSteps));
+  const handleBack = () => setStep((prev) => Math.max(prev - 1, 1));
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch("/api/update-custom-value", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    }).then(() => alert("Submitted!"));
+    alert('Form submitted!');
   };
 
   return (
-    <div style={{ maxWidth: 600, margin: "0 auto", padding: "40px", fontFamily: "Arial" }}>
-      <h1 style={{ color: "#4a90e2" }}>LaunchPoint Setup</h1>
+    <div
+      style={{
+        backgroundImage: 'url("/1f88d17a-c9a3-4c30-a82c-bfdcbc21ea3a.png")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        minHeight: '100vh',
+        padding: '80px 20px',
+      }}
+    >
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          maxWidth: '700px',
+          margin: '0 auto',
+          backgroundColor: '#fff',
+          borderRadius: '12px',
+          padding: '40px',
+          boxShadow: '0 0 20px rgba(0, 0, 0, 0.1)',
+        }}
+      >
+        <h2 style={{ color: '#4a90e2', marginBottom: '30px' }}>
+          Step {step} of {totalSteps}
+        </h2>
 
-      <form onSubmit={handleSubmit}>
         {step === 1 && (
           <>
-            <h2>Business Info</h2>
-            <label>Business Name</label>
-            <input type="text" name="business_name" value={formData.business_name} onChange={handleChange} required />
-            <br /><br />
+            <label style={labelStyle}>Business Name</label>
+            <input type="text" name="business_name" style={inputStyle} />
+
+            <label style={labelStyle}>Industry</label>
+            <input type="text" name="industry" style={inputStyle} />
           </>
         )}
 
         {step === 2 && (
           <>
-            <h2>Branding</h2>
-            <label>Primary Brand Color</label>
-            <input type="text" name="brand_color" value={formData.brand_color} onChange={handleChange} />
-            <br /><br />
+            <label style={labelStyle}>Brand Colors</label>
+            <input type="text" name="brand_colors" style={inputStyle} />
+
+            <label style={labelStyle}>Font Preferences</label>
+            <input type="text" name="font_preferences" style={inputStyle} />
           </>
         )}
 
         {step === 3 && (
           <>
-            <h2>About Section</h2>
-            <label>About Your Business</label>
-            <textarea name="about_text" value={formData.about_text} onChange={handleChange} />
-            <br /><br />
+            <label style={labelStyle}>Logo URL</label>
+            <input type="text" name="logo_url" style={inputStyle} />
+
+            <label style={labelStyle}>Header Image URL</label>
+            <input type="text" name="header_image_url" style={inputStyle} />
           </>
         )}
 
-        {/* Add more steps here using step === 4, 5, etc. */}
+        {step === 4 && (
+          <>
+            <label style={labelStyle}>Intro Headline</label>
+            <input type="text" name="intro_headline" style={inputStyle} />
 
-        <div style={{ marginTop: 20 }}>
-          {step > 1 && <button type="button" onClick={prevStep}>Back</button>}
-          {step < 3 ? (
-            <button type="button" onClick={nextStep} style={{ marginLeft: 10 }}>Next</button>
+            <label style={labelStyle}>Intro Text</label>
+            <textarea name="intro_text" rows="4" style={inputStyle} />
+          </>
+        )}
+
+        {step === 5 && (
+          <>
+            <label style={labelStyle}>About Section</label>
+            <textarea name="about_section" rows="4" style={inputStyle} />
+
+            <label style={labelStyle}>Mission Statement</label>
+            <textarea name="mission_statement" rows="3" style={inputStyle} />
+          </>
+        )}
+
+        {step === 6 && (
+          <>
+            <label style={labelStyle}>Facebook</label>
+            <input type="text" name="facebook_url" style={inputStyle} />
+
+            <label style={labelStyle}>Instagram</label>
+            <input type="text" name="instagram_url" style={inputStyle} />
+
+            <label style={labelStyle}>TikTok</label>
+            <input type="text" name="tiktok_url" style={inputStyle} />
+          </>
+        )}
+
+        <div style={{ marginTop: '30px', display: 'flex', justifyContent: 'space-between' }}>
+          {step > 1 && (
+            <button type="button" onClick={handleBack} style={buttonStyleSecondary}>
+              Back
+            </button>
+          )}
+          {step < totalSteps ? (
+            <button type="button" onClick={handleNext} style={buttonStyle}>
+              Next
+            </button>
           ) : (
-            <button type="submit" style={{ backgroundColor: "#4a90e2", color: "white" }}>Submit</button>
+            <button type="submit" style={buttonStyle}>
+              Submit
+            </button>
           )}
         </div>
       </form>
     </div>
   );
 }
+
+// 🔷 Shared Styles
+const labelStyle = {
+  display: 'block',
+  marginBottom: '8px',
+  fontWeight: 'bold',
+  color: '#333',
+};
+
+const inputStyle = {
+  width: '100%',
+  padding: '10px',
+  marginBottom: '25px',
+  borderRadius: '6px',
+  border: '1px solid #ccc',
+  fontSize: '16px',
+};
+
+const buttonStyle = {
+  backgroundColor: '#4a90e2',
+  color: '#fff',
+  padding: '12px 20px',
+  border: 'none',
+  borderRadius: '6px',
+  cursor: 'pointer',
+  fontSize: '16px',
+};
+
+const buttonStyleSecondary = {
+  ...buttonStyle,
+  backgroundColor: '#ee8800',
+};
 
 
