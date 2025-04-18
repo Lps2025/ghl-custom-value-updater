@@ -1,16 +1,22 @@
-// next.config.js
-module.exports = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   async headers() {
     return [
       {
-        source: "/(.*)",
+        source: '/(.*)',
         headers: [
           {
-            key: "X-Frame-Options",
-            value: "ALLOWALL", // Allow GHL to iframe this app
+            key: 'X-Frame-Options',
+            value: 'ALLOWALL',
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: 'frame-ancestors https://*.highlevel.com https://*.gohighlevel.com;',
           },
         ],
       },
     ];
   },
 };
+
+module.exports = nextConfig;
