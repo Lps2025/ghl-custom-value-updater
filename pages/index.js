@@ -41,7 +41,7 @@ export default function Home() {
           <>
             <label style={labelStyle}>Business Name</label>
             <input type="text" name="business_name" style={inputStyle} />
-
+          </>
         )}
 
         {step === 2 && (
