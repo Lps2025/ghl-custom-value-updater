@@ -73,7 +73,7 @@ export default function Home() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form Submitted:', formData);
-    // Here you can add your axios call to submit the formData
+    // Add your axios call here if needed
   };
 
   const currentStep = steps[step];
@@ -83,21 +83,30 @@ export default function Home() {
       <Head>
         <title>Website Builder Survey</title>
       </Head>
-      <div style={{
-        backgroundImage: 'url(/hex-bg.png)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        minHeight: '100vh',
-        padding: '60px 20px'
-      }}>
-        <div style={{
-          maxWidth: '700px',
-          margin: '0 auto',
-          background: '#fff',
-          padding: '40px',
-          borderRadius: '10px',
-          boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
-        }}>
+      <div
+        style={{
+          backgroundImage: "url('https://storage.googleapis.com/msgsndr/5s0BIRTqOrh6JMlNr7au/media/67c277a71e6df2b68b921f3c.png')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          minHeight: '100vh',
+          paddingTop: '60px',
+          paddingLeft: '20px',
+          paddingRight: '20px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'flex-start',
+        }}
+      >
+        <div
+          style={{
+            maxWidth: '700px',
+            width: '100%',
+            background: '#fff',
+            padding: '40px',
+            borderRadius: '10px',
+            boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
+          }}
+        >
           <div style={{ textAlign: 'center', marginBottom: '30px' }}>
             <h3 style={{ margin: 0, color: '#4a90e2' }}>Launch Point Studio</h3>
             <h1 style={{ margin: '5px 0', fontSize: '2rem', color: '#333' }}>Website Builder</h1>
@@ -107,12 +116,21 @@ export default function Home() {
             Step {step + 1} of {steps.length}
           </div>
 
-          <h2 style={{ fontSize: '1.2rem', marginBottom: '20px', color: '#222' }}>{currentStep.title}</h2>
+          <h2 style={{ fontSize: '1.2rem', marginBottom: '20px', color: '#222' }}>
+            {currentStep.title}
+          </h2>
 
           <form onSubmit={handleSubmit}>
             {currentStep.fields.map((field) => (
               <div key={field.name} style={{ marginBottom: '20px' }}>
-                <label style={{ display: 'block', marginBottom: '8px', color: '#333', fontWeight: '500' }}>
+                <label
+                  style={{
+                    display: 'block',
+                    marginBottom: '8px',
+                    color: '#333',
+                    fontWeight: '500'
+                  }}
+                >
                   {field.label}
                 </label>
                 <input
