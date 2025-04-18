@@ -42,9 +42,6 @@ export default function Home() {
             <label style={labelStyle}>Business Name</label>
             <input type="text" name="business_name" style={inputStyle} />
 
-            <label style={labelStyle}>Industry</label>
-            <input type="text" name="industry" style={inputStyle} />
-          </>
         )}
 
         {step === 2 && (
