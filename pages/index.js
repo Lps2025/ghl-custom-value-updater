@@ -1,6 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState({
+    location_id: "",
+    business_name: "",
+    brand_color: "#4a90e2",
+    about_text: "",
+    // Add other fields here as needed
+  });
+
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://embed.highlevel.tools/sdk.js";
@@ -9,68 +18,78 @@ export default function Home() {
       if (window.HL) {
         window.HL.on("ready", function () {
           const locationId = window.HL?.location?.id;
-          const input = document.querySelector('input[name="location_id"]');
-          if (input && locationId) {
-            input.value = locationId;
-          }
+          setFormData(prev => ({ ...prev, location_id: locationId }));
         });
       }
     };
     document.body.appendChild(script);
   }, []);
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const nextStep = () => setStep((prev) => prev + 1);
+  const prevStep = () => setStep((prev) => prev - 1);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    fetch("/api/update-custom-value", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    }).then(() => alert("Submitted!"));
+  };
+
   return (
-    <div style={{ padding: "40px", fontFamily: "Arial", maxWidth: "800px", margin: "0 auto" }}>
-      <h1 style={{ color: "#4a90e2" }}>LaunchPoint Setup Form</h1>
+    <div style={{ maxWidth: 600, margin: "0 auto", padding: "40px", fontFamily: "Arial" }}>
+      <h1 style={{ color: "#4a90e2" }}>LaunchPoint Setup</h1>
 
-      <form method="POST" action="/api/update-custom-value" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+      <form onSubmit={handleSubmit}>
+        {step === 1 && (
+          <>
+            <h2>Business Info</h2>
+            <label>Business Name</label>
+            <input type="text" name="business_name" value={formData.business_name} onChange={handleChange} required />
+            <br /><br />
+          </>
+        )}
 
-        {/* Branding Info */}
-        <label>Business Name</label>
-        <input type="text" name="business_name" />
+        {step === 2 && (
+          <>
+            <h2>Branding</h2>
+            <label>Primary Brand Color</label>
+            <input type="text" name="brand_color" value={formData.brand_color} onChange={handleChange} />
+            <br /><br />
+          </>
+        )}
 
-        <label>Primary Brand Color</label>
-        <input type="text" name="brand_color" />
+        {step === 3 && (
+          <>
+            <h2>About Section</h2>
+            <label>About Your Business</label>
+            <textarea name="about_text" value={formData.about_text} onChange={handleChange} />
+            <br /><br />
+          </>
+        )}
 
-        <label>Logo Image URL</label>
-        <input type="text" name="logo_url" />
+        {/* Add more steps here using step === 4, 5, etc. */}
 
-        {/* Hero Section */}
-        <label>Hero Headline</label>
-        <input type="text" name="hero_headline" />
-
-        <label>Hero Subtext</label>
-        <textarea name="hero_text" rows="2" />
-
-        {/* Menu Section */}
-        <label>Menu Image URL</label>
-        <input type="text" name="menu_image" />
-
-        {/* About Section */}
-        <label>About Section Text</label>
-        <textarea name="about_text" rows="3" />
-
-        {/* Contact/Social */}
-        <label>Phone Number</label>
-        <input type="text" name="phone_number" />
-
-        <label>Email Address</label>
-        <input type="text" name="email_address" />
-
-        <label>Facebook URL</label>
-        <input type="text" name="facebook_url" />
-
-        <label>Instagram URL</label>
-        <input type="text" name="instagram_url" />
-
-        {/* Location Hidden Field */}
-        <input type="hidden" name="location_id" value="" />
-
-        <button type="submit" style={{ backgroundColor: "#4a90e2", color: "white", padding: "10px 20px", border: "none", borderRadius: "4px", cursor: "pointer" }}>
-          Submit
-        </button>
+        <div style={{ marginTop: 20 }}>
+          {step > 1 && <button type="button" onClick={prevStep}>Back</button>}
+          {step < 3 ? (
+            <button type="button" onClick={nextStep} style={{ marginLeft: 10 }}>Next</button>
+          ) : (
+            <button type="submit" style={{ backgroundColor: "#4a90e2", color: "white" }}>Submit</button>
+          )}
+        </div>
       </form>
     </div>
   );
 }
+
 
