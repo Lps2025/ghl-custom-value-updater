@@ -1,153 +1,187 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import Head from 'next/head';
+
+const steps = [
+  {
+    title: 'Business Info',
+    fields: [
+      { name: 'business_name', label: 'Business Name' },
+      { name: 'business_type', label: 'Business Type' },
+      { name: 'location', label: 'Location' },
+      { name: 'contact_email', label: 'Contact Email' },
+      { name: 'contact_phone', label: 'Contact Phone' },
+    ]
+  },
+  {
+    title: 'Branding',
+    fields: [
+      { name: 'brand_colors', label: 'Brand Colors (Hex or Description)' },
+      { name: 'logo_url', label: 'Logo URL' },
+      { name: 'font_preferences', label: 'Font Preferences' },
+    ]
+  },
+  {
+    title: 'Featured Images',
+    fields: [
+      { name: 'header_image_url', label: 'Header Image URL' },
+      { name: 'gallery_images', label: 'Gallery Images (List URLs)' },
+    ]
+  },
+  {
+    title: 'Section Content',
+    fields: [
+      { name: 'services_offered', label: 'Services Offered' },
+      { name: 'products_offered', label: 'Products Offered' },
+      { name: 'menu_url', label: 'Menu URL (if applicable)' },
+    ]
+  },
+  {
+    title: 'About Section',
+    fields: [
+      { name: 'about_us', label: 'About Us Content' },
+      { name: 'team_info', label: 'Team Information' },
+      { name: 'testimonials', label: 'Testimonials' },
+    ]
+  },
+  {
+    title: 'Social Media & Contact',
+    fields: [
+      { name: 'facebook_url', label: 'Facebook URL' },
+      { name: 'instagram_url', label: 'Instagram URL' },
+      { name: 'tiktok_url', label: 'TikTok URL' },
+      { name: 'other_social', label: 'Other Social Media Links' },
+    ]
+  },
+];
 
 export default function Home() {
-  const [step, setStep] = useState(1);
-  const totalSteps = 6;
+  const [step, setStep] = useState(0);
+  const [formData, setFormData] = useState({});
 
-  const handleNext = () => setStep((prev) => Math.min(prev + 1, totalSteps));
-  const handleBack = () => setStep((prev) => Math.max(prev - 1, 1));
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const nextStep = () => {
+    if (step < steps.length - 1) setStep(step + 1);
+  };
+
+  const prevStep = () => {
+    if (step > 0) setStep(step - 1);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert('Form submitted!');
+    console.log('Form Submitted:', formData);
+    // Here you can add your axios call to submit the formData
   };
 
+  const currentStep = steps[step];
+
   return (
-    <div
-      style={{
-        backgroundImage: 'url("/1f88d17a-c9a3-4c30-a82c-bfdcbc21ea3a.png")',
+    <>
+      <Head>
+        <title>Website Builder Survey</title>
+      </Head>
+      <div style={{
+        backgroundImage: 'url(/hex-bg.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         minHeight: '100vh',
-        padding: '80px 20px',
-      }}
-    >
-      <form
-        onSubmit={handleSubmit}
-        style={{
+        padding: '60px 20px'
+      }}>
+        <div style={{
           maxWidth: '700px',
           margin: '0 auto',
-          backgroundColor: '#fff',
-          borderRadius: '12px',
+          background: '#fff',
           padding: '40px',
-          boxShadow: '0 0 20px rgba(0, 0, 0, 0.1)',
-        }}
-      >
-        <h2 style={{ color: '#4a90e2', marginBottom: '30px' }}>
-          Step {step} of {totalSteps}
-        </h2>
+          borderRadius: '10px',
+          boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
+        }}>
+          <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+            <h3 style={{ margin: 0, color: '#4a90e2' }}>Launch Point Studio</h3>
+            <h1 style={{ margin: '5px 0', fontSize: '2rem', color: '#333' }}>Website Builder</h1>
+          </div>
 
-        {step === 1 && (
-          <>
-            <label style={labelStyle}>Business Name</label>
-            <input type="text" name="business_name" style={inputStyle} />
-          </>
-        )}
+          <div style={{ marginBottom: '20px', color: '#4a90e2', fontWeight: 'bold' }}>
+            Step {step + 1} of {steps.length}
+          </div>
 
-        {step === 2 && (
-          <>
-            <label style={labelStyle}>Brand Colors</label>
-            <input type="text" name="brand_colors" style={inputStyle} />
+          <h2 style={{ fontSize: '1.2rem', marginBottom: '20px', color: '#222' }}>{currentStep.title}</h2>
 
-            <label style={labelStyle}>Font Preferences</label>
-            <input type="text" name="font_preferences" style={inputStyle} />
-          </>
-        )}
+          <form onSubmit={handleSubmit}>
+            {currentStep.fields.map((field) => (
+              <div key={field.name} style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', marginBottom: '8px', color: '#333', fontWeight: '500' }}>
+                  {field.label}
+                </label>
+                <input
+                  type="text"
+                  name={field.name}
+                  value={formData[field.name] || ''}
+                  onChange={handleChange}
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    border: '1px solid #ccc',
+                    borderRadius: '5px',
+                    fontSize: '1rem'
+                  }}
+                />
+              </div>
+            ))}
 
-        {step === 3 && (
-          <>
-            <label style={labelStyle}>Logo URL</label>
-            <input type="text" name="logo_url" style={inputStyle} />
-
-            <label style={labelStyle}>Header Image URL</label>
-            <input type="text" name="header_image_url" style={inputStyle} />
-          </>
-        )}
-
-        {step === 4 && (
-          <>
-            <label style={labelStyle}>Intro Headline</label>
-            <input type="text" name="intro_headline" style={inputStyle} />
-
-            <label style={labelStyle}>Intro Text</label>
-            <textarea name="intro_text" rows="4" style={inputStyle} />
-          </>
-        )}
-
-        {step === 5 && (
-          <>
-            <label style={labelStyle}>About Section</label>
-            <textarea name="about_section" rows="4" style={inputStyle} />
-
-            <label style={labelStyle}>Mission Statement</label>
-            <textarea name="mission_statement" rows="3" style={inputStyle} />
-          </>
-        )}
-
-        {step === 6 && (
-          <>
-            <label style={labelStyle}>Facebook</label>
-            <input type="text" name="facebook_url" style={inputStyle} />
-
-            <label style={labelStyle}>Instagram</label>
-            <input type="text" name="instagram_url" style={inputStyle} />
-
-            <label style={labelStyle}>TikTok</label>
-            <input type="text" name="tiktok_url" style={inputStyle} />
-          </>
-        )}
-
-        <div style={{ marginTop: '30px', display: 'flex', justifyContent: 'space-between' }}>
-          {step > 1 && (
-            <button type="button" onClick={handleBack} style={buttonStyleSecondary}>
-              Back
-            </button>
-          )}
-          {step < totalSteps ? (
-            <button type="button" onClick={handleNext} style={buttonStyle}>
-              Next
-            </button>
-          ) : (
-            <button type="submit" style={buttonStyle}>
-              Submit
-            </button>
-          )}
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '30px' }}>
+              {step > 0 && (
+                <button
+                  type="button"
+                  onClick={prevStep}
+                  style={{
+                    background: '#ccc',
+                    color: '#333',
+                    padding: '10px 20px',
+                    border: 'none',
+                    borderRadius: '5px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Back
+                </button>
+              )}
+              {step < steps.length - 1 ? (
+                <button
+                  type="button"
+                  onClick={nextStep}
+                  style={{
+                    background: '#4a90e2',
+                    color: '#fff',
+                    padding: '10px 20px',
+                    border: 'none',
+                    borderRadius: '5px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Next
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  style={{
+                    background: '#ee8800',
+                    color: '#fff',
+                    padding: '10px 20px',
+                    border: 'none',
+                    borderRadius: '5px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Submit
+                </button>
+              )}
+            </div>
+          </form>
         </div>
-      </form>
-    </div>
+      </div>
+    </>
   );
 }
-
-// 🔷 Shared Styles
-const labelStyle = {
-  display: 'block',
-  marginBottom: '8px',
-  fontWeight: 'bold',
-  color: '#333',
-};
-
-const inputStyle = {
-  width: '100%',
-  padding: '10px',
-  marginBottom: '25px',
-  borderRadius: '6px',
-  border: '1px solid #ccc',
-  fontSize: '16px',
-};
-
-const buttonStyle = {
-  backgroundColor: '#4a90e2',
-  color: '#fff',
-  padding: '12px 20px',
-  border: 'none',
-  borderRadius: '6px',
-  cursor: 'pointer',
-  fontSize: '16px',
-};
-
-const buttonStyleSecondary = {
-  ...buttonStyle,
-  backgroundColor: '#ee8800',
-};
-
-
