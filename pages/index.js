@@ -10,6 +10,10 @@ export default function Home() {
         window.HL.on("ready", function () {
           console.log("✅ GHL SDK is ready");
 
+<<<<<<< HEAD
+=======
+          // Example: automatically get the locationId and inject it
+>>>>>>> e9d7aaf (Local changes before pulling remote)
           const locationId = window.HL?.location?.id;
           const input = document.querySelector('input[name="location_id"]');
           if (input && locationId) {
